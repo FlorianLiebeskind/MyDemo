@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Board_Burning.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,7 +18,7 @@ namespace WindowsFormsApp3
         {
             InitializeComponent();
         }
-
+        public static Scanner scanner;
         public class cell 
         { 
             public int a { get; set; }
@@ -58,6 +60,17 @@ namespace WindowsFormsApp3
 
             // 向DataGridView追加
             dataGridView1.Columns.Insert(dataGridView1.Columns.Count, dgv_button_col);
+
+
+
+            //////////////////////////////////////////////////
+            ///
+            scanner = new Scanner();
+            scanner.IP = "192.168.1.104";
+            scanner.Port = 24;
+            scanner.ServerStart();
+
+
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -66,6 +79,12 @@ namespace WindowsFormsApp3
             {
                 MessageBox.Show("行: " + e.RowIndex.ToString() + ", 列: " + e.ColumnIndex.ToString() + "; 被点击了");
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            scanner.ServerSend(new byte[] { 0x02, 0x54, 0x03 });
+            label1.Text = Encoding.Default.GetString(scanner.ServerReceive());
         }
     }
 }
